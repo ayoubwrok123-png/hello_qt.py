@@ -1,0 +1,30 @@
+<!-- templates/results.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Results - {{ email }}</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;margin:20px}.box{border:1px solid #ddd;padding:10px;margin:8px 0;border-radius:6px}</style>
+</head>
+<body>
+  <h1>Results for {{ email }}</h1>
+  <p><a href="{{ url_for('index') }}">Back</a></p>
+
+  {% if results.error %}
+    <div class="box"><strong>Error:</strong> {{ results.error }}</div>
+  {% else %}
+    {% for folder, subs in results.items() %}
+      <h3>{{ folder }}</h3>
+      {% if subs %}
+        <ul>
+          {% for s in subs %}
+            <li>{{ s }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p><em>No recent messages</em></p>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+</body>
+</html>
