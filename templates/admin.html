@@ -1,0 +1,47 @@
+<!-- templates/admin.html -->
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin - My Mailer App</title>
+  <style>body{font-family:Arial,Helvetica,sans-serif;margin:20px}.card{border:1px solid #ddd;padding:12px;margin:8px 0;border-radius:6px}</style>
+</head>
+<body>
+  <h1>Admin</h1>
+
+  {% if not authorized %}
+    <form method="get">
+      <label>Admin password: <input name="pw" type="password"></label>
+      <button type="submit">Enter</button>
+    </form>
+    <p>Provide the admin password (set in environment variable ADMIN_PASSWORD).</p>
+    <p><a href="{{ url_for('index') }}">Back</a></p>
+  {% else %}
+    <p><a href="{{ url_for('index') }}">Back to list</a></p>
+    <h2>Add account</h2>
+    <form method="post">
+      <input type="hidden" name="pw" value="{{ pw }}">
+      <label>Email: <input name="email" required></label><br><br>
+      <label>App password: <input name="app_password" required></label><br><br>
+      <label>Label: <input name="label"></label><br><br>
+      <button type="submit">Add</button>
+    </form>
+
+    <h2>Existing accounts</h2>
+    {% if accounts %}
+      {% for id, email, label in accounts %}
+        <div class="card">
+          <strong>{{ email }}</strong> <small>{{ label or "" }}</small>
+          <form method="post" action="{{ url_for('do_delete', acc_id=id) }}" style="display:inline">
+            <input type="hidden" name="pw" value="{{ pw }}">
+            <button type="submit" onclick="return confirm('Delete?')">Delete</button>
+          </form>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No accounts.</p>
+    {% endif %}
+    <p><a href="{{ url_for('export_db') }}?pw={{ pw }}">Export DB</a></p>
+  {% endif %}
+</body>
+</html>
